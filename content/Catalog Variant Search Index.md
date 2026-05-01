@@ -5,7 +5,6 @@ domain: backend
 tags:
   - architecture
   - backend
-  - search
   - catalog
 ---
 
@@ -85,21 +84,22 @@ E3[catalog-index.re-sync] --> PS
 
 **Events:** `product.created`, `product.updated`, `product.deleted`, `catalog-index.re-sync`
 
-| Event | Action |
-|---|---|
-| `product.created` | Fetch all variants → index each → rebuild category index |
-| `product.updated` | Re-index all variants → rebuild category index |
-| `product.deleted` | Delete all variant + category indexes for the product |
-| `catalog-index.re-sync` | Delete all → re-fetch → re-index all variants |
+| Event                   | Action                                                   |
+| ----------------------- | -------------------------------------------------------- |
+| `product.created`       | Fetch all variants → index each → rebuild category index |
+| `product.updated`       | Re-index all variants → rebuild category index           |
+| `product.deleted`       | Delete all variant + category indexes for the product    |
+| `catalog-index.re-sync` | Delete all → re-fetch → re-index all variants            |
 
 **Manual re-sync:**
+
 ```typescript
-const eventBus = container.resolve(Modules.EVENT_BUS);
+const eventBus = container.resolve(Modules.EVENT_BUS)
 await eventBus.emit({
-name: "catalog-index.re-sync",
-data: { product_id: "prod_01KDFN2C3YKDBW0KCKRBQVW1B1" },
-});
-````
+  name: "catalog-index.re-sync",
+  data: { product_id: "prod_01KDFN2C3YKDBW0KCKRBQVW1B1" },
+})
+```
 
 **Logs:**
 
@@ -154,7 +154,7 @@ const { items, count, facets } = await catalogService.search({
   pagination: { skip: 0, take: 20, order: { mrp: "asc" } },
   facets: ["metal", "metal_color", "item_size", "mrp", "gross_weight"],
   collapseByProduct: true, // DISTINCT ON product_id for PLP
-});
+})
 ```
 
 **`filters` vs `resultFilters`:**
@@ -170,19 +170,19 @@ Use `resultFilters` only for outlet/is_default narrowing where you don't want fa
 
 ```typescript
 // Upsert variants (does NOT auto-rebuild product-level indexes)
-await service.upsertCatalogVariantSearchIndices([variantDoc]);
+await service.upsertCatalogVariantSearchIndices([variantDoc])
 
 // Delete by variant ID
-await service.deleteCatalogVariantSearchIndexByVariantId(variantId);
+await service.deleteCatalogVariantSearchIndexByVariantId(variantId)
 
 // Delete by product ID (all 3 indexes)
-await service.deleteCatalogVariantSearchIndicesByProductId(productId);
+await service.deleteCatalogVariantSearchIndicesByProductId(productId)
 
 // Rebuild category index (call after all variants for a product are processed)
-await service.rebuildCatalogProductCategoryIndex(productId);
+await service.rebuildCatalogProductCategoryIndex(productId)
 
 // Rebuild scalar facet index
-await service.rebuildCatalogProductScalarFacetIndex(productId);
+await service.rebuildCatalogProductScalarFacetIndex(productId)
 ```
 
 > **Note:** Subscribers must call `rebuildCatalogProductCategoryIndex()` explicitly after processing all variants for a product to avoid race conditions.
@@ -201,8 +201,8 @@ Scalar facets (`metal`, `gender`, `metal_color`, `metal_purity`, `item_size`, `c
 
 Range facets (`mrp`, `gross_weight`, `total_diamond_weight`, `total_diamond_pcs`) use predefined buckets with **half-open intervals** `[from, to)`.
 
-| Facet                  | Buckets                            |
-| ---------------------- | ---------------------------------- |
+| Facet                  | Buckets                           |
+| ---------------------- | --------------------------------- |
 | `mrp`                  | 0–10K, 10K–25K, 25K–50K, ... 10L+ |
 | `gross_weight`         | 0–2, 2–4, 4–6, 6–8, 8–10, 10+     |
 | `total_diamond_weight` | 0–0.25, 0.25–0.5, ..., 5+         |
@@ -222,12 +222,12 @@ By default, when a filter is active its own facet is computed **without** that f
 
 Range facet labels returned to the API:
 
-| Facet           | Example labels                        |
-| --------------- | ------------------------------------- |
+| Facet           | Example labels                       |
+| --------------- | ------------------------------------ |
 | `price`         | `Under ₹10K`, `₹10K – ₹25K`, `₹10L+` |
-| `weight_ranges` | `0–2g`, `2–4g`, `10g+`                |
-| `diamond_piece` | `0–2 pcs`, `2–4 pcs`, `40+ pcs`       |
-| `diamond_carat` | `0–0.25 ct`, `0.25–0.5 ct`, `5+ ct`   |
+| `weight_ranges` | `0–2g`, `2–4g`, `10g+`               |
+| `diamond_piece` | `0–2 pcs`, `2–4 pcs`, `40+ pcs`      |
+| `diamond_carat` | `0–0.25 ct`, `0.25–0.5 ct`, `5+ ct`  |
 
 ---
 
