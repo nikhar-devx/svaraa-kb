@@ -1,5 +1,16 @@
-This document lists all SEO-friendly category filter URLs available on the Svaraa storefront.
-Each URL loads a specific jewellery category pre-filtered by price range or metal colour.
+---
+title: SEO Beautiful URLs
+created: 2026-05-01
+domain: storefront
+tags:
+  - reference
+  - storefront
+  - seo
+---
+
+## Summary
+
+All SEO-friendly category filter URLs for the Svaraa storefront. Each URL loads a jewellery category pre-filtered by price range or metal colour.
 
 **Environment:** Replace `uat.svaraa.com` with `www.svaraa.com` for production.
 
@@ -204,5 +215,3 @@ Base category: `uat.svaraa.com/categories/lab-grown-diamond-necklaces`
 | Yellow Gold | https://uat.svaraa.com/categories/gold-necklaces       |
 | Rose Gold   | https://uat.svaraa.com/categories/rose-gold-necklaces  |
 | White Gold  | https://uat.svaraa.com/categories/white-gold-necklaces |
-
----

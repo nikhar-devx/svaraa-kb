@@ -1,3 +1,14 @@
+---
+title: Catalog Variant Search Index
+created: 2026-05-01
+domain: backend
+tags:
+  - architecture
+  - backend
+  - search
+  - catalog
+---
+
 ## Overview
 
 The `catalog-variant-search-index` module provides PostgreSQL-based search, filtering, and faceted aggregations for product variants. It replaces OpenSearch with three synchronized tables that are kept in sync via Medusa event subscribers.
@@ -190,8 +201,8 @@ Scalar facets (`metal`, `gender`, `metal_color`, `metal_purity`, `item_size`, `c
 
 Range facets (`mrp`, `gross_weight`, `total_diamond_weight`, `total_diamond_pcs`) use predefined buckets with **half-open intervals** `[from, to)`.
 
-| Facet                  | Buckets                           |
-| ---------------------- | --------------------------------- |
+| Facet                  | Buckets                            |
+| ---------------------- | ---------------------------------- |
 | `mrp`                  | 0–10K, 10K–25K, 25K–50K, ... 10L+ |
 | `gross_weight`         | 0–2, 2–4, 4–6, 6–8, 8–10, 10+     |
 | `total_diamond_weight` | 0–0.25, 0.25–0.5, ..., 5+         |
@@ -211,12 +222,12 @@ By default, when a filter is active its own facet is computed **without** that f
 
 Range facet labels returned to the API:
 
-| Facet           | Example labels                       |
-| --------------- | ------------------------------------ |
+| Facet           | Example labels                        |
+| --------------- | ------------------------------------- |
 | `price`         | `Under ₹10K`, `₹10K – ₹25K`, `₹10L+` |
-| `weight_ranges` | `0–2g`, `2–4g`, `10g+`               |
-| `diamond_piece` | `0–2 pcs`, `2–4 pcs`, `40+ pcs`      |
-| `diamond_carat` | `0–0.25 ct`, `0.25–0.5 ct`, `5+ ct`  |
+| `weight_ranges` | `0–2g`, `2–4g`, `10g+`                |
+| `diamond_piece` | `0–2 pcs`, `2–4 pcs`, `40+ pcs`       |
+| `diamond_carat` | `0–0.25 ct`, `0.25–0.5 ct`, `5+ ct`   |
 
 ---
 
